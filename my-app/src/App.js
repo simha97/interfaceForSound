@@ -1,23 +1,24 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./App.css";
 
 const sentences = [
   "Clear your mind",
-  "You did well",
+  "You did well today",
   "Think of something peaceful",
+  "",
   // Additional sentences...
 ];
 
 function App() {
   const [currentSentenceIndex, setCurrentSentenceIndex] = useState(0);
   const [phase, setPhase] = useState("fade-in"); // Handle sentence animation
-  const [showButton, setShowButton] = useState(false); // To show the button after sentences
+  const [showButtons, setShowButtons] = useState(false); // Adjusted for both buttons
+  const audioRef = useRef(new Audio("/Chimes.mp3")); // Ref for the audio object
 
   useEffect(() => {
     let timeoutId;
 
     if (currentSentenceIndex < sentences.length - 1) {
-      // Handle sentence animations
       if (phase === "fade-in") {
         timeoutId = setTimeout(() => setPhase("visible"), 2000);
       } else if (phase === "visible") {
@@ -29,16 +30,19 @@ function App() {
         }, 2000);
       }
     } else {
-      // After the last sentence, show the button with a fade-in effect
-      setShowButton(true);
+      setShowButtons(true);
     }
 
     return () => clearTimeout(timeoutId);
   }, [phase, currentSentenceIndex]);
 
   const playAudio = () => {
-    const audio = new Audio("/Chimes.mp3");
-    audio.play();
+    audioRef.current.play();
+  };
+
+  const stopAudio = () => {
+    audioRef.current.pause(); // Pause the audio
+    audioRef.current.currentTime = 0; // Reset the audio to the start
   };
 
   return (
@@ -48,10 +52,15 @@ function App() {
           {sentences[currentSentenceIndex]}
         </div>
       )}
-      {showButton && (
-        <button className="fade-in-button" onClick={playAudio}>
-          Play Sound
-        </button>
+      {showButtons && (
+        <div>
+          <button className="fade-in-button" onClick={playAudio}>
+            Play Sound
+          </button>
+          <button className="fade-in-button" onClick={stopAudio}>
+            Stop Sound
+          </button>
+        </div>
       )}
     </div>
   );
