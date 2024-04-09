@@ -36,6 +36,10 @@ function App() {
     return () => clearTimeout(timeoutId);
   }, [phase, currentSentenceIndex]);
 
+  useEffect(() => {
+    audioRef.current.loop = true;
+  }, []);
+
   const playAudio = () => {
     audioRef.current.play();
   };
