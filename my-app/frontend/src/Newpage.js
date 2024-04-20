@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios"; // Import axios
 
 function UserForm() {
   const [name, setName] = useState("");
@@ -6,14 +7,15 @@ function UserForm() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const response = await fetch("/submit-form", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ name, mood }),
-    });
-    // Handle the response from the server here
+    axios
+      .post("https://interface-for-sound-api.vercel.app/", { name, mood }) // Update the URL and data object as necessary
+      .then((response) => {
+        // Handle the response from the server here
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
